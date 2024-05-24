@@ -1,13 +1,18 @@
-const express = require("express");
+const express = require('express');
 const router = express.Router();
+const postController = require('../controllers/blogController');
+const authMiddleware = require('../middleware/authMiddleware');
 
-//Import Controllers
+// Create a post
+router.post('/posts', authMiddleware, postController.createPost);
 
-const {createBlog, getAllBlogs} = require("../controllers/blogController");
+// Like or unlike a post
+router.put('/posts/:postId/like', authMiddleware, postController.likePost);
 
-router.post("/blogs/create",createBlog);
+// Comment on a post
+router.post('/posts/:postId/comment', authMiddleware, postController.commentOnPost);
 
-router.get("/blogs/getblog",getAllBlogs);
+// Get all posts
+router.get('/posts', postController.getAllPosts);
 
-//export
 module.exports = router;

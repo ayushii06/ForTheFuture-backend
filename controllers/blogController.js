@@ -1,138 +1,79 @@
-const Blog = require("../models/blogModel");
-const Tag = require("../models/tagModel");
-var ObjectId = require('mongoose').Types.ObjectId;
+const Post = require('../models/blogModel');
+const User = require('../models/user');
 
-exports.createBlog = async (req,res)=>{
-    try{
-        const {body,user} = req.body;
-        const blog = new Blog({
-            body,user
-        })
-        const savedBlog = await blog.save();
-
-        const recentBlog = await Blog.find().sort({"_id": -1}).limit(1);
-        const recentBlogJson = recentBlog[0];
-
-        const recentBlogTag = recentBlogJson.tag;
-
-        const existingTag = await Tag.findOne({title:recentBlogTag});
-
-        let newTag = {};
-        if(existingTag){
-            newTag = await Tag.findByIdAndUpdate({_id:existingTag._id},{$push:{blogs:recentBlogJson._id}},{new:true});
-        }
-        else{
-            const createdTag = new Tag({
-                title:recentBlogTag, 
-                blogs:[recentBlogJson._id]
-            })
-            newTag = await createdTag.save();
-        }
-        
-        return res.status(200).json({
+// Create a new post
+exports.createPost = async (req, res) => {
+    try {
+        const { content } = req.body;
+        const newPost = new Post({ user: req.user.id, content });
+        const savedPost = await newPost.save();
+        res.status(201).json({
             success:true,
-            message:'Blog created Successfully',
-            blog: savedBlog,
-            tag: newTag,
+            savedPost,
         })
-    }
-    catch(error){
-        return res.status(400).json({
-            success:false,
-            message:"Error while creating blog",
-            error:error.message,
-        })
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
 };
 
-exports.getAllBlogs = async (req,res)=>{
-    
-    try{
-        const tag = req.query.tag;
-        const hashtag = req.query.hashtag;
-        const blogId = req.query.blogId;
-        const newBlogId = new ObjectId(blogId);
-        
+// Like or unlike a post
+exports.likePost = async (req, res) => {
+    try {
+        const post = await Post.findById(req.params.postId);
+        if (!post) return res.status(404).json({ message: 'Post not found' });
 
-        if(!tag && !hashtag && !blogId){
-            // const blogs = await Blog.find();
-            //
-            let {page} = req.query;
-            page = parseInt(page,10)||1;
-            const pageSize = 10;
-            const blogsdata = await Blog.aggregate([
-                {
-                  $facet: {
-                    metadata: [{ $count: 'totalCount' }],
-                    data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
-                  },
-                },
-              ]);
-              
-              const blogs = blogsdata[0].data;
-              const totalCount = blogsdata[0].metadata[0].totalCount;
-              
-            
-            const totalPages = Math.ceil(totalCount/pageSize);
-            return res.status(200).json({
-                page,
-                pageSize,
-                totalPages,
-                blogs,                  
-            })
+        if (post.likes.includes(req.user.id)) {
+            post.likes.pull(req.user.id);
+        } else {
+            post.likes.push(req.user.id);
         }
-        else if(tag){
-            const blogsdata = await Tag.findOne({title:tag}).populate({path: 'blogs'});
-            const blogs = blogsdata.blogs;
-            return res.status(200).json({
-                success:true,
-                message:'Blogs related to tag fetched successfully',
-                blogs,
-            })
+        await post.save();
+        const updatedPost = await post.populate('likes', 'username');
+        res.status(200).json(updatedPost);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+};
+
+// Comment on a post
+exports.commentOnPost = async (req, res) => {
+    try {
+        const postId = req.params.postId;
+        
+        // Find the post by ID
+        const post = await Post.findById(postId);
+        if (!post) {
+            return res.status(404).json({ message: 'Post not found' });
         }
-        else if(hashtag){
-            let {page} = req.query;
-            page = parseInt(page,10)||1;
-            // console.log(page);
-            const pageSize = 10;
-            // const blogs = await Blog.find({hashtag:hashtag}).skip(pageSize * (page-1))
-            // .limit(pageSize)
-            const blogsdata = await Blog.aggregate([
-                {$match : {hashtag:hashtag}},
-                {
-                    $facet: {
-                      metadata: [{ $count: 'totalCount' }],
-                      data: [{ $skip: (page - 1) * pageSize }, { $limit: pageSize }],
-                    },
-                  },
-            ])
-            const blogs = blogsdata[0].data;
-            const totalCount = blogsdata[0].metadata[0].totalCount;
-            return res.status(200).json({
-                page,
-                pageSize,
-                totalCount,
-                blogs,                  
-            }); 
-        } 
-        else if(blogId){
-            const blog = await Blog.findById(newBlogId);
-            const tag = blog.tag;
-            const relatedTagData = await Tag.findOne({title:tag}).populate({path: 'blogs'});
-            const relatedTag = relatedTagData.blogs;
-            return res.status(200).json({
-                success:true,
-                message:'Blog Page fetched Successfully',
-                blog,
-                relatedTag
-            })
-        }       
+
+        // Create the new comment
+        const newComment = {
+            user: req.user.id,
+            text: req.body.text
+        };
+
+        // Add the new comment to the post's comments array
+        post.comments.push(newComment);
+
+        // Save the updated post
+        await post.save();
+
+        // Refetch the post with populated comments
+        const updatedPost = await Post.findById(postId).populate('comments.user', 'username');
+
+        // Return the updated post with populated comments
+        res.status(201).json(updatedPost);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-    catch(error){
-        console.log(error.message)
-        return res.status(400).json({
-            error:"Error while fetching Blogs",
-            message:error.message
-        })
+};
+
+// Get all posts
+exports.getAllPosts = async (req, res) => {
+    try {
+        const posts = await Post.find().populate('user', 'username').populate('comments.user', 'username');
+        res.status(200).json(posts);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
     }
-}
+};
