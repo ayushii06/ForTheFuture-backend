@@ -10,6 +10,10 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());//middleware
 app.use(cors());
 
+const path = require("path");
+
+app.use(express.static(path.join(__dirname, "build"))); 
+
 app.use("/api/v1",blog);//mount
 app.use("/api/v1",auth);//mount
 
