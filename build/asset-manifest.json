@@ -1,0 +1,36 @@
+{
+  "files": {
+    "main.css": "/static/css/main.030225c7.css",
+    "main.js": "/static/js/main.24c2a2c0.js",
+    "static/media/earth.jpg": "/static/media/earth.9fa25aa00662af1bf170.jpg",
+    "static/media/community.jpg": "/static/media/community.96ab21feca205990d78e.jpg",
+    "static/media/trends.jpg": "/static/media/trends.0b6f5df3ca84beeac8b6.jpg",
+    "static/media/resource.jpg": "/static/media/resource.adc91d9cd8e732cad8e0.jpg",
+    "static/media/questions.jpg": "/static/media/questions.b8e0601c2815ae9c5e35.jpg",
+    "static/media/E-WEB-Goal-17.png": "/static/media/E-WEB-Goal-17.f970e7c36c351b30a49c.png",
+    "static/media/E-WEB-Goal-12.png": "/static/media/E-WEB-Goal-12.d3360baf5738c38a86e2.png",
+    "static/media/E-WEB-Goal-09.png": "/static/media/E-WEB-Goal-09.81355d6f8caa71f0977b.png",
+    "static/media/E-WEB-Goal-16.png": "/static/media/E-WEB-Goal-16.d9da1670c4b52ac89d90.png",
+    "static/media/E-WEB-Goal-13.png": "/static/media/E-WEB-Goal-13.a5a81d4d076ace73c0f7.png",
+    "static/media/E-WEB-Goal-07.png": "/static/media/E-WEB-Goal-07.2ec0d1a25cbc81fdfadb.png",
+    "static/media/E-WEB-Goal-03.png": "/static/media/E-WEB-Goal-03.f6b9f9379bff6be75230.png",
+    "static/media/E-WEB-Goal-01.png": "/static/media/E-WEB-Goal-01.2869a96997aa1ed3009d.png",
+    "static/media/E-WEB-Goal-08.png": "/static/media/E-WEB-Goal-08.11c4c71e570b9b125e6f.png",
+    "static/media/E-WEB-Goal-14.png": "/static/media/E-WEB-Goal-14.7e925148d030fbe8ad95.png",
+    "static/media/E-WEB-Goal-06.png": "/static/media/E-WEB-Goal-06.74efcd0f1d51a5a3f0ab.png",
+    "static/media/E-WEB-Goal-11.png": "/static/media/E-WEB-Goal-11.884c794e2a3bb6b91812.png",
+    "static/media/E-WEB-Goal-02.png": "/static/media/E-WEB-Goal-02.610a1339a8adb1ddf548.png",
+    "static/media/E-WEB-Goal-04.png": "/static/media/E-WEB-Goal-04.f8a53f9bfef979a9796c.png",
+    "static/media/E-WEB-Goal-15.png": "/static/media/E-WEB-Goal-15.8458faf644fdf5afe6c6.png",
+    "static/media/E-WEB-Goal-05.png": "/static/media/E-WEB-Goal-05.2f81f05072595bdf2e59.png",
+    "static/media/E-WEB-Goal-10.png": "/static/media/E-WEB-Goal-10.a7817c5e3b1c3e6b1eba.png",
+    "index.html": "/index.html",
+    "static/media/user.svg": "/static/media/user.048ab60526fe7d2170f698804da0338e.svg",
+    "main.030225c7.css.map": "/static/css/main.030225c7.css.map",
+    "main.24c2a2c0.js.map": "/static/js/main.24c2a2c0.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.030225c7.css",
+    "static/js/main.24c2a2c0.js"
+  ]
+}
